@@ -527,15 +527,15 @@ namespace DRLMobile.Uwp.ViewModel
                 {
                     if (StartGeopoint == null && !string.IsNullOrWhiteSpace(StartLocation.Trim()))
                     {
-                        if (int.TryParse(StartLocation, out int result))
+                        if (StartLocation.All(char.IsDigit))
                         {
-                            if (result > 99999 || result < 9999)
+                            if (StartLocation.Length != 5)
                             {
                                 isValidStart = false;
                             }
                             else
                             {
-                                StartGeopoint = await GetGeoLocationFromAddress(StartLocation, 'S');
+                                StartGeopoint = await GetGeoLocationFromAddress(StartLocation);
                                 if (StartGeopoint == null)
                                 {
                                     isValidStart = false;
@@ -544,7 +544,7 @@ namespace DRLMobile.Uwp.ViewModel
                         }
                         else
                         {
-                            StartGeopoint = await GetGeoLocationFromAddress(StartLocation, 'S');
+                            StartGeopoint = await GetGeoLocationFromAddress(StartLocation);
                             if (StartGeopoint == null)
                             {
                                 isValidStart = false;
@@ -554,15 +554,15 @@ namespace DRLMobile.Uwp.ViewModel
                     }
                     if (EndGeopoint == null && !string.IsNullOrWhiteSpace(EndLocation.Trim()))
                     {
-                        if (int.TryParse(EndLocation, out int result))
+                        if (EndLocation.All(char.IsDigit))
                         {
-                            if (result > 99999 || result < 9999)
+                            if (EndLocation.Length != 5)
                             {
                                 isValidEnd = false;
                             }
                             else
                             {
-                                EndGeopoint = await GetGeoLocationFromAddress(EndLocation, 'E');
+                                EndGeopoint = await GetGeoLocationFromAddress(EndLocation);
                                 if (EndGeopoint == null)
                                 {
                                     isValidEnd = false;
@@ -571,7 +571,7 @@ namespace DRLMobile.Uwp.ViewModel
                         }
                         else
                         {
-                            EndGeopoint = await GetGeoLocationFromAddress(EndLocation, 'E');
+                            EndGeopoint = await GetGeoLocationFromAddress(EndLocation);
                             if (EndGeopoint == null)
                             {
                                 isValidEnd = false;
@@ -639,7 +639,7 @@ namespace DRLMobile.Uwp.ViewModel
         /// <param name="address">The address string to geocode</param>
         /// <param name="type">Character indicating start ('S') or end ('E') location</param>
         /// <returns>Geopoint with coordinates if successful, null otherwise</returns>
-        private async Task<Geopoint> GetGeoLocationFromAddress(string address, char type)
+        private async Task<Geopoint> GetGeoLocationFromAddress(string address)
         {
             if (GeocodeService == null) return null;
 
@@ -661,7 +661,7 @@ namespace DRLMobile.Uwp.ViewModel
                             return null;
                     }
 
-                    System.Diagnostics.Debug.WriteLine($@"[Debug] Type {type} Address City- {geoResult.City}, State- {geoResult.State}, Country- {geoResult.Country}");
+                    System.Diagnostics.Debug.WriteLine($@"[Debug] Address City- {geoResult.City}, State- {geoResult.State}, Country- {geoResult.Country}");
 
                     return new Geopoint(new BasicGeoposition { Latitude = geoResult.Latitude, Longitude = geoResult.Longitude });
                 }
